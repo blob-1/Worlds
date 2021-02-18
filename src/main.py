@@ -8,7 +8,7 @@ from Maps.Maps import Map
 py.init()
 game_ON = True
 
-map = Map(None, 192, 108, 20)
+map = Map(None, Perlin = 20)
 
 while game_ON:	
 	reset_win(win)
