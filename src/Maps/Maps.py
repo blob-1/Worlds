@@ -1,7 +1,8 @@
-from random import randint
+from random import randint, choice
 from math import cos, pi
 
 from .Tiles import Tile
+from pygame import Surface
 
 class Map():
 	def __init__(self, tiles = None, x = 192, y = 108, Perlin = 50):
@@ -14,12 +15,13 @@ class Map():
 			for i in range(100):
 				self.__generateCircle(randint(10,20), randint(0,x), randint(0,y), randint(0,100))
 			self.__Perlin(Perlin)
-
 					
 	def get_tiles(self): return self.__tiles
 	def set_tiles(self, tiles): self.__tiles = tiles
 	
-	def draw(self, surface, type = "heightMap"):
+	def draw(self, surface, type = "heightMap", shift = 0):
+		img = Surface((surface.get_width(), surface.get_height()))
+	
 		tile_height = surface.get_height() / self.__height
 		tile_width  = surface.get_width() / self.__width
 
@@ -27,9 +29,20 @@ class Map():
 		for row in self.__tiles:
 			y = 0
 			for tile in row:
-				tile.draw(surface, x, y, tile_width, tile_height, type)
+				tile.draw(img, x, y, tile_width, tile_height, type)
 				y = y+tile_height
 			x = x+tile_width
+		
+		if shift == 0:
+			surface.blit(img, (0, 0))
+		else:
+			while shift > surface.get_width():
+				shift = shift - surface.get_width()
+			while shift < 0:
+				shift = shift + surface.get_width()
+			
+			surface.blit(img, (-surface.get_width()+shift, 0))	
+			surface.blit(img, (shift, 0))
 	
 	## RANDOM MAP GENERATION ! ##
 	
@@ -79,17 +92,17 @@ class Map():
 					new_tiles[-1].append(Tile(newHeight/9))
 			self.__tiles = new_tiles
 
-	def __getValidTile(self, i, j): # note : we are on a torus !
-		while i < 0:
-			i = i + self.__width
-		while i >= self.__width:
-			i = i - self.__width
-		
+	def __getValidTile(self, i, j): # note : we are on a torus here!
 		while j < 0:
 			j = j + self.__height
 		while j >= self.__height:
 			j = j - self.__height
-
+		
+		while i < 0:
+			i = i + self.__width
+		while i >= self.__width:
+			i = i - self.__width
+			
 		return(self.__tiles[i][j])
 		
 	def __generateCircle(self, r, Xshift=10, Yshift=10, height=100):
