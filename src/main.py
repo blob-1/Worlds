@@ -15,7 +15,7 @@ map = Map(None, Perlin = 20)
 shift = 0
 
 while game_ON:	
-	reset_win(win)
+	# events related to keyboard
 	for event in py.event.get():
 		# To quit push esc
 		if event.type == py.QUIT:
@@ -28,18 +28,19 @@ while game_ON:
 				MapType = "heightMap"
 			elif event.key == py.K_KP2:
 				MapType = "continent"
-			
+	
+	#events related to mousse
 	if py.mouse.get_pressed()[0] == 1 and not moussePresed:
 		moussePresed = True
 		mousePos = py.mouse.get_rel()[0]
 	elif py.mouse.get_pressed()[0] == 0 and moussePresed:
 		moussePresed = False
-		
 	if moussePresed:
 		shift = shift+py.mouse.get_rel()[0]
-			
-	map.draw(win, MapType, shift)
 	
+	# actual drawing
+	map.draw(win, MapType, shift)
 	py.display.flip()
-	# win.scroll(-100)	
+	reset_win(win)
+	
 	

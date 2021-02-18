@@ -15,13 +15,15 @@ class Map():
 			for i in range(100):
 				self.__generateCircle(randint(10,20), randint(0,x), randint(0,y), randint(0,100))
 			self.__Perlin(Perlin)
+		self.__shift = 0
 					
 	def get_tiles(self): return self.__tiles
 	def set_tiles(self, tiles): self.__tiles = tiles
 	
 	def draw(self, surface, type = "heightMap", shift = 0):
 		img = Surface((surface.get_width(), surface.get_height()))
-	
+		
+		# placing the tiles
 		tile_height = surface.get_height() / self.__height
 		tile_width  = surface.get_width() / self.__width
 
@@ -33,6 +35,7 @@ class Map():
 				y = y+tile_height
 			x = x+tile_width
 		
+		# shifting the view and actually drawing
 		if shift == 0:
 			surface.blit(img, (0, 0))
 		else:
@@ -105,6 +108,7 @@ class Map():
 			
 		return(self.__tiles[i][j])
 		
+	# note : here to generate masses of similar heights and so having a more balanced map	
 	def __generateCircle(self, r, Xshift=10, Yshift=10, height=100):
 		for r in range(r):
 			l = int(r*cos(pi/4))
