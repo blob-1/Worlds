@@ -1,45 +1,68 @@
 from random import randint, choice
 from math import cos, pi
 
-from .Tiles import Tile
+from Maps.Tiles import Tile 
+from Maps.Regions.Continents import Continent
+from Maps.Regions.Oceans import Ocean
 from pygame import Surface
 
 class Map():
 	def __init__(self, tiles = None, x = 192, y = 108, Perlin = 50):
+		self.__type = "continent"
+		
 		if tiles != None:
-			self.__tiles  = tiles
+			self.__Tiles  = tiles
 			self.__height = len(tiles)
 			self.__width  = len(tiles[0])
 		else:
 			self.__Generate_tiles(x, y)
-			for i in range(100):
+			for i in range(int((self.__height*self.__height)/116.64)):
 				self.__generateCircle(randint(10,20), randint(0,x), randint(0,y), randint(0,100))
 			self.__Perlin(Perlin)
-		self.__shift = 0
+		
+		# generating the regions ! Ech conected tiles (Ocean or Continent) is assembled in one mass
+		self.__Regions = []
+		for i, row in enumerate(self.__Tiles):
+			for j, tile in enumerate(row):
+				if tile.getRegionalized():				
+					continue
+				else:
+					newR = Ocean()
+					if newR.generate(self, i, j, tile):
+						pass
+					else: 
+						newR = Continent()
+						newR.generate(self, i, j, tile)
+					self.__Regions.append(newR)
+			
 		self.__modified = True
-					
-	def get_tiles(self): return self.__tiles
-	def set_tiles(self, tiles): self.__tiles = tiles
+			
+		# print(len(max(self.__Regions, key = lambda x:len(x.getTiles())).getTiles()))
+		# print(len(self.__Regions))	
+			
+	def get_tiles(self): return self.__Tiles
+	def set_tiles(self, tiles): self.__Tiles = tiles
 	
-	def draw(self, surface, type = "heightMap", shift = [0,0]):
+	def draw(self, surface, type = "continent", shift = [0,0]): 
 		# placing the tiles
-		if self.__modified:
+		if self.__modified or self.__type != type:
+			self.__type = type
 			self.__img = Surface((surface.get_width(), surface.get_height()))
 					
 			tile_height = surface.get_height() / self.__height
 			tile_width  = surface.get_width() / self.__width
 
 			x = 0
-			for row in self.__tiles:
+			for row in self.__Tiles:
 				y = 0
 				for tile in row:
 					tile.draw(self.__img, x, y, tile_width, tile_height, type)
 					y = y+tile_height
 				x = x+tile_width
 			self.__modified = False
-		
+			
 		# shifting the view and actually drawing
-		if shift == (0,0):
+		if shift == [0,0]:
 			surface.blit(self.__img, (0, 0))
 		else:
 			surface.blit(self.__img, (-surface.get_width()+shift[0], -surface.get_height()+shift[1]))	
@@ -50,52 +73,41 @@ class Map():
 	## RANDOM MAP GENERATION ! ##
 	
 	def __Generate_tiles(self, x, y):
-		self.__tiles = []
+		self.__Tiles = []
 		for i in range(x):
-			self.__tiles.append([])
+			self.__Tiles.append([])
 			for j in range(y):
-				self.__tiles[i].append(Tile())
+				self.__Tiles[i].append(Tile())
 				self.__width  = x
 				self.__height = y
 				
 	def __Perlin(self, nbcycles):	
 		for c in range(nbcycles):	
 			new_tiles = []
-			for i, row in enumerate(self.__tiles):
+			for i, row in enumerate(self.__Tiles):
 				new_tiles.append([])
 				for j, tile in enumerate(row):
-					newHeight = 0
-					# top left
-					newHeight = newHeight+self.__getValidTile(i-1,j-1).get_height()
-					
-					# top top
-					newHeight = newHeight+self.__getValidTile(i-1,j).get_height()
-					
-					# top right
-					newHeight = newHeight+self.__getValidTile(i-1,j+1).get_height()		
-						
-					# left left	
-					newHeight = newHeight+self.__getValidTile(i,j-1).get_height()
-					
-					# center
-					newHeight = newHeight+self.__tiles[i][j].get_height()
-						
-					# right right 
-					newHeight = newHeight+self.__getValidTile(i,j+1).get_height()						
-					
-					# bottom left
-					newHeight = newHeight+self.__getValidTile(i+1,j-1).get_height()
-					
-					# bottom bottom
-					newHeight = newHeight+self.__getValidTile(i+1,j).get_height()
-					
-					# bottom right
-					newHeight = newHeight+self.__getValidTile(i+1,j+1).get_height()
+					newHeight = self.__Tiles[i][j].get_height()
+					for neibourg in self.getNeibourgs(i, j):
+						newHeight = newHeight+neibourg.get_height()
 					
 					new_tiles[-1].append(Tile(newHeight/9))
-			self.__tiles = new_tiles
+			self.__Tiles = new_tiles
 
-	def __getValidTile(self, i, j): # note : we are on a square flat torus here!
+	def getNeibourgs(self, i, j, returnIndicises = False):
+		neigs = []
+		neigs.append(self.__getValidTile(i-1,j-1, returnIndicises))
+		neigs.append(self.__getValidTile(i-1,j  , returnIndicises))
+		neigs.append(self.__getValidTile(i-1,j+1, returnIndicises))
+		neigs.append(self.__getValidTile(i,j-1  , returnIndicises))
+		#neigs.append(self.__getValidTile(i,j))
+		neigs.append(self.__getValidTile(i,j+1  , returnIndicises))
+		neigs.append(self.__getValidTile(i+1,j-1, returnIndicises))
+		neigs.append(self.__getValidTile(i+1,j  , returnIndicises))
+		neigs.append(self.__getValidTile(i+1,j+1, returnIndicises))
+		return(neigs)
+
+	def __getValidTile(self, i, j, returnIndicises = False): # note : we are on a square flat torus here!
 		while j < 0:
 			j = j + self.__height
 		while j >= self.__height:
@@ -105,8 +117,11 @@ class Map():
 			i = i + self.__width
 		while i >= self.__width:
 			i = i - self.__width
-			
-		return(self.__tiles[i][j])
+		
+		if returnIndicises:
+			return((self.__Tiles[i][j],i,j))
+		else:
+			return(self.__Tiles[i][j])
 		
 	# note : here to generate masses of similar heights and so having a more balanced map	
 	def __generateCircle(self, r, Xshift=10, Yshift=10, height=100):

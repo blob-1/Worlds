@@ -35,6 +35,8 @@ class MapDisplay():
 				elif event.key == py.K_KP1:
 					self.__mapType = "continent"
 				elif event.key == py.K_KP2:
+					self.__mapType = "continent2"		
+				elif event.key == py.K_KP3:
 					self.__mapType = "heightMap"
 				# map selection
 				elif event.key == 275: # right arrow
@@ -45,7 +47,6 @@ class MapDisplay():
 					self.__activeMap = self.__activeMap - 1	
 					if self.__activeMap <= -1:
 						self.__activeMap = self.__nbMaps - 1
-						
 	
 		if self.__visible:	
 			#events related to mousse
@@ -63,22 +64,22 @@ class MapDisplay():
 			# actual drawing
 			self.__get_map().draw(win, self.__mapType, self.__get_shift())
 			
-	def __get_shift(self, shift = 0):
+	def __get_shift(self):
 		return self.__Shifts[self.__activeMap]	
 		
 	def __set_Xshift(self, win, shift):
-		self.__Shifts[self.__activeMap][0] = self.__Shifts[self.__activeMap][0]+shift
-		while self.__Shifts[self.__activeMap][0] > win.get_width():
-			self.__Shifts[self.__activeMap][0] = self.__Shifts[self.__activeMap][0] - win.get_width()
-		while self.__Shifts[self.__activeMap][0] < 0:
-			self.__Shifts[self.__activeMap][0] = self.__Shifts[self.__activeMap][0] + win.get_width()
+		self.__Shifts[self.__activeMap][0] = self.__get_shift()[0]+shift
+		while self.__get_shift()[0] > win.get_width():
+			self.__Shifts[self.__activeMap][0] = self.__get_shift()[0] - win.get_width()
+		while self.__get_shift()[0] < 0:
+			self.__Shifts[self.__activeMap][0] = self.__get_shift()[0] + win.get_width()
 		
 	def __set_Yshift(self, win, shift):
-		self.__Shifts[self.__activeMap][1] = self.__Shifts[self.__activeMap][1]+shift
-		while self.__Shifts[self.__activeMap][1] > win.get_height():
-			self.__Shifts[self.__activeMap][1] = self.__Shifts[self.__activeMap][1] - win.get_height()
-		while self.__Shifts[self.__activeMap][1] < 0:
-			self.__Shifts[self.__activeMap][1] = self.__Shifts[self.__activeMap][1] + win.get_height()
+		self.__Shifts[self.__activeMap][1] = self.__get_shift()[1]+shift
+		while self.__get_shift()[1] > win.get_height():
+			self.__Shifts[self.__activeMap][1] = self.__get_shift()[1] - win.get_height()
+		while self.__get_shift()[1] < 0:
+			self.__Shifts[self.__activeMap][1] = self.__get_shift()[1] + win.get_height()
 		
 	def __get_map(self):
 		return self.__Maps[self.__activeMap]

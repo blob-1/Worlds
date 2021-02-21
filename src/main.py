@@ -1,7 +1,7 @@
 import pygame as py
 
 from random import seed
-from MapDisplay import MapDisplay
+from Maps.MapDisplay import MapDisplay
 from Maps.Maps import Map
 from Win.Win import win, reset_win
 
@@ -28,5 +28,5 @@ while gameON:
 	mapDisplay.draw(win, events)
 
 	py.display.flip()
-	reset_win(win)
+	# reset_win(win)
 	

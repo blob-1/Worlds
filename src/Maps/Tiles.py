@@ -6,6 +6,8 @@ class Tile():
 			self.__height = height
 		else:
 			self.__height = randint(0, 100) # percentage of maximum height in order to be simple !
+			
+		self.__region = None
 		
 	def get_height(self): return self.__height
 	def set_height(self, height): self.__height = height
@@ -13,7 +15,7 @@ class Tile():
 	def draw(self, surface, x, y, w, h, type = "heightMap"):
 		if type == "heightMap":
 			grayscale = int((self.__height*255)/100)
-			surface.fill((grayscale, grayscale, grayscale), (x, y, w, h))
+			color = (grayscale, grayscale, grayscale)
 		elif type == "continent":
 			if self.__height < 10:
 				color = (10, 5, 71)	
@@ -33,5 +35,10 @@ class Tile():
 				color = (112, 55, 6)
 			else:
 				color = (102, 30, 0)
+		elif type == "continent2":
+			color = self.__region.getColor()
+
+		surface.fill(color, (x, y, w, h))
 			
-			surface.fill(color, (x, y, w, h))
+	def regionalize(self, region):self.__region = region
+	def getRegionalized(self): return self.__region
