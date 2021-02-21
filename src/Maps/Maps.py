@@ -39,11 +39,6 @@ class Map():
 		if shift == 0:
 			surface.blit(img, (0, 0))
 		else:
-			while shift > surface.get_width():
-				shift = shift - surface.get_width()
-			while shift < 0:
-				shift = shift + surface.get_width()
-			
 			surface.blit(img, (-surface.get_width()+shift, 0))	
 			surface.blit(img, (shift, 0))
 	
