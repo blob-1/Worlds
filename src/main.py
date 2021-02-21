@@ -7,8 +7,7 @@ from Win.Win import win, reset_win
 
 seed(1000)
 
-map = Map(None, Perlin = 20)
-mapDisplay = MapDisplay()
+mapDisplay = MapDisplay([Map(None, Perlin = 20), Map(None, Perlin = 20), Map(None, Perlin = 20)])
 
 py.init()
 
@@ -26,7 +25,7 @@ while gameON:
 				gameON = False
 				break
 			
-	mapDisplay.draw(map, win, events)
+	mapDisplay.draw(win, events)
 
 	py.display.flip()
 	reset_win(win)

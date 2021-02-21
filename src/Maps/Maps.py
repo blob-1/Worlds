@@ -90,7 +90,7 @@ class Map():
 					new_tiles[-1].append(Tile(newHeight/9))
 			self.__tiles = new_tiles
 
-	def __getValidTile(self, i, j): # note : we are on a cylinder here!
+	def __getValidTile(self, i, j): # note : we are on a square flat torus here!
 		while j < 0:
 			j = j + self.__height
 		while j >= self.__height:
