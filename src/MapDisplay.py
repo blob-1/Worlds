@@ -10,7 +10,7 @@ class MapDisplay():
 		self.__nbMaps = len(Maps)
 		self.__Shifts = []
 		for maps in self.__Maps:
-			self.__Shifts.append(0)
+			self.__Shifts.append([0,0])
 		self.__activeMap = 0
 
 	def __show(self):
@@ -52,23 +52,33 @@ class MapDisplay():
 			# move the map !
 			if py.mouse.get_pressed()[0] == 1 and not self.__moussePresed:
 				self.__moussePresed = True
-				mousePos = py.mouse.get_rel()[0]
+				mousePos = py.mouse.get_rel()
 			elif py.mouse.get_pressed()[0] == 0 and self.__moussePresed:
 				self.__moussePresed = False
 			if self.__moussePresed:
-				self.__shift(+ py.mouse.get_rel()[0])
-				
-				while self.__shift() > win.get_width():
-					self.__shift(- win.get_width())
-				while self.__shift() < 0:
-					self.__shift(+ win.get_width())
+				mousePos = py.mouse.get_rel()
+				self.__set_Xshift(win, mousePos[0])
+				self.__set_Yshift(win, mousePos[1])
 			
 			# actual drawing
-			self.__map().draw(win, self.__mapType, self.__shift())
+			self.__get_map().draw(win, self.__mapType, self.__get_shift())
 			
-	def __shift(self, shift = 0):
-		self.__Shifts[self.__activeMap] = self.__Shifts[self.__activeMap]+shift
+	def __get_shift(self, shift = 0):
 		return self.__Shifts[self.__activeMap]	
 		
-	def __map(self):
+	def __set_Xshift(self, win, shift):
+		self.__Shifts[self.__activeMap][0] = self.__Shifts[self.__activeMap][0]+shift
+		while self.__Shifts[self.__activeMap][0] > win.get_width():
+			self.__Shifts[self.__activeMap][0] = self.__Shifts[self.__activeMap][0] - win.get_width()
+		while self.__Shifts[self.__activeMap][0] < 0:
+			self.__Shifts[self.__activeMap][0] = self.__Shifts[self.__activeMap][0] + win.get_width()
+		
+	def __set_Yshift(self, win, shift):
+		self.__Shifts[self.__activeMap][1] = self.__Shifts[self.__activeMap][1]+shift
+		while self.__Shifts[self.__activeMap][1] > win.get_height():
+			self.__Shifts[self.__activeMap][1] = self.__Shifts[self.__activeMap][1] - win.get_height()
+		while self.__Shifts[self.__activeMap][1] < 0:
+			self.__Shifts[self.__activeMap][1] = self.__Shifts[self.__activeMap][1] + win.get_height()
+		
+	def __get_map(self):
 		return self.__Maps[self.__activeMap]

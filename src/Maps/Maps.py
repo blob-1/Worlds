@@ -16,31 +16,36 @@ class Map():
 				self.__generateCircle(randint(10,20), randint(0,x), randint(0,y), randint(0,100))
 			self.__Perlin(Perlin)
 		self.__shift = 0
+		self.__modified = True
 					
 	def get_tiles(self): return self.__tiles
 	def set_tiles(self, tiles): self.__tiles = tiles
 	
-	def draw(self, surface, type = "heightMap", shift = 0):
-		img = Surface((surface.get_width(), surface.get_height()))
-		
+	def draw(self, surface, type = "heightMap", shift = [0,0]):
 		# placing the tiles
-		tile_height = surface.get_height() / self.__height
-		tile_width  = surface.get_width() / self.__width
+		if self.__modified:
+			self.__img = Surface((surface.get_width(), surface.get_height()))
+					
+			tile_height = surface.get_height() / self.__height
+			tile_width  = surface.get_width() / self.__width
 
-		x = 0
-		for row in self.__tiles:
-			y = 0
-			for tile in row:
-				tile.draw(img, x, y, tile_width, tile_height, type)
-				y = y+tile_height
-			x = x+tile_width
+			x = 0
+			for row in self.__tiles:
+				y = 0
+				for tile in row:
+					tile.draw(self.__img, x, y, tile_width, tile_height, type)
+					y = y+tile_height
+				x = x+tile_width
+			self.__modified = False
 		
 		# shifting the view and actually drawing
-		if shift == 0:
-			surface.blit(img, (0, 0))
+		if shift == (0,0):
+			surface.blit(self.__img, (0, 0))
 		else:
-			surface.blit(img, (-surface.get_width()+shift, 0))	
-			surface.blit(img, (shift, 0))
+			surface.blit(self.__img, (-surface.get_width()+shift[0], -surface.get_height()+shift[1]))	
+			surface.blit(self.__img, (-surface.get_width()+shift[0], shift[1]))			
+			surface.blit(self.__img, (shift[0], -surface.get_height()+shift[1]))	
+			surface.blit(self.__img, (shift[0], shift[1]))
 	
 	## RANDOM MAP GENERATION ! ##
 	
