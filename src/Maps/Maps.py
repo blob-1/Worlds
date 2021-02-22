@@ -24,7 +24,7 @@ class Map():
 		self.__Regions = []
 		for i, row in enumerate(self.__Tiles):
 			for j, tile in enumerate(row):
-				if tile.getRegionalized():				
+				if tile.getRegion():				
 					continue
 				else:
 					newR = Ocean()

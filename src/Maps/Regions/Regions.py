@@ -4,7 +4,7 @@ class Region():
 		if type(self) is Region:
 			raise Exception('Region is an abstract class and cannot be instantiated directly')
 
-		self._color = (0,0,0)
+		self._color = (0,0,0,64)
 		
 	def getTiles(self): return self._Tiles
 	def addTile(self, tile):

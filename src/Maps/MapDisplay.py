@@ -35,8 +35,10 @@ class MapDisplay():
 				elif event.key == py.K_KP1:
 					self.__mapType = "continent"
 				elif event.key == py.K_KP2:
-					self.__mapType = "continent2"		
-				elif event.key == py.K_KP3:
+					self.__mapType = "region"
+				elif event.key == py.K_KP3:					
+					self.__mapType = "subRegion"		
+				elif event.key == py.K_h:
 					self.__mapType = "heightMap"
 				# map selection
 				elif event.key == 275: # right arrow
