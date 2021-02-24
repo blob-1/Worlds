@@ -15,17 +15,18 @@ class Ocean(Region):
 		return False
 	
 	# test if the first tile is of the right type then catches all of the ones that are of the same type and connected !	
-	def generate(self, Map, i, j, tile):
-		if self.addTile((tile, i, j)):	
-			for tile in self._Tiles:
-				for neig in Map.getNeibourgs(tile[1], tile[2], returnIndicises = True):
-					self.addTile(neig)
+	def generate(self, Map, i, j, tile):	
+		for tile in self._Tiles:
+			for neig in Map.getNeibourgs(tile[1], tile[2], returnIndicises = True):
+				self.addTile(neig)
 					
-			self.__Zones = []
-			for tile in self._Tiles:
-				zone = Coast()
+		self.__Zones = []
+		for tile in self._Tiles:
+			zone = Coast()
+			if not zone.addTile(tile):
+				zone = DeepSea()
 				if not zone.addTile(tile):
-					zone = DeepSea()
-					if not zone.addTile(tile):
-						continue
-				self.__Zones.append(zone.generate(Map, tile))
+					continue
+			self.__Zones.append(zone.generate(Map, tile))
+				
+		self._Tiles.sort(key=lambda x:x[0])

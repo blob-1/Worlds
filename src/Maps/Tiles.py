@@ -10,6 +10,8 @@ class Tile():
 		self.__region = None
 		self.__subRegion = None
 		
+		self.__caracteristics = []
+		
 	def get_height(self): return self.__height
 	def set_height(self, height): self.__height = height
 	
@@ -25,7 +27,7 @@ class Tile():
 				color = (104, 97, 198)
 			elif self.__height < 65:
 				color = (252, 208, 146)
-			elif self.__height < 70:
+			elif self.__height < 75:
 				color = (216, 185, 140)
 			elif self.__height < 85:
 				color = (170, 140, 99)
@@ -45,9 +47,22 @@ class Tile():
 			color = (grayscale, grayscale, grayscale)
 			
 		surface.fill(color, (x, y, w, h))	
+		
+		for chars in self.__caracteristics:
+			chars.draw(surface, x, y, w, h)
 			
 	def regionalize(self, region):self.__region = region
 	def getRegion(self): return self.__region	
 	
 	def subRegionalize(self, subRegion):self.__subRegion = subRegion
 	def getSubRegion(self): return self.__subRegion
+	
+	def __gt__(self, other):
+		h1 = self.__height
+		h2 = other.get_height()
+		if h1 > h2: return True
+		elif h1 < h2: return False
+		else: return randint(0,1)
+		
+	def addCharacteristic(self, chars):self.__caracteristics.append(chars)
+		

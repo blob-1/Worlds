@@ -24,21 +24,20 @@ class Map():
 		self.__Regions = []
 		for i, row in enumerate(self.__Tiles):
 			for j, tile in enumerate(row):
-				if tile.getRegion():				
-					continue
-				else:
-					newR = Ocean()
-					if newR.generate(self, i, j, tile):
-						pass
-					else: 
-						newR = Continent()
-						newR.generate(self, i, j, tile)
-					self.__Regions.append(newR)
+				newR = Ocean()
+				if not newR.addTile((tile,i,j)):
+					newR = Continent()
+					if not newR.addTile((tile,i,j)):
+						continue
+							
+				newR.generate(self, i, j, tile)	
+				self.__Regions.append(newR)
 			
 		self.__modified = True
-			
+				
 		# print(len(max(self.__Regions, key = lambda x:len(x.getTiles())).getTiles()))
-		# print(len(self.__Regions))	
+		# print(len(self.__Regions))
+		# quit()		
 			
 	def get_tiles(self): return self.__Tiles
 	def set_tiles(self, tiles): self.__Tiles = tiles
