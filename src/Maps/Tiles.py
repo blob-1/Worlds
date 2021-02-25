@@ -1,4 +1,5 @@
 from random import randint
+from pygame.draw import line
 
 class Tile():
 	def __init__(self, height = None):
@@ -47,7 +48,8 @@ class Tile():
 			color = (grayscale, grayscale, grayscale)
 			
 		surface.fill(color, (x, y, w, h))	
-		
+	
+	def drawCharacteristics(self, surface, x, y, w, h):
 		for chars in self.__caracteristics:
 			chars.draw(surface, x, y, w, h)
 			
@@ -64,5 +66,6 @@ class Tile():
 		elif h1 < h2: return False
 		else: return randint(0,1)
 		
-	def addCharacteristic(self, chars):self.__caracteristics.append(chars)
+	def addCharacteristic(self, chars):
+		self.__caracteristics.append(chars)
 		

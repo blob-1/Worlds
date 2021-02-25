@@ -43,13 +43,12 @@ class Map():
 	def set_tiles(self, tiles): self.__Tiles = tiles
 	
 	def draw(self, surface, type = "continent", shift = [0,0]): 
+		tile_height = surface.get_height() / self.__height
+		tile_width  = surface.get_width() / self.__width
 		# placing the tiles
 		if self.__modified or self.__type != type:
 			self.__type = type
 			self.__img = Surface((surface.get_width(), surface.get_height()))
-					
-			tile_height = surface.get_height() / self.__height
-			tile_width  = surface.get_width() / self.__width
 
 			x = 0
 			for row in self.__Tiles:
@@ -58,8 +57,18 @@ class Map():
 					tile.draw(self.__img, x, y, tile_width, tile_height, type)
 					y = y+tile_height
 				x = x+tile_width
-			self.__modified = False
 			
+			# adding characteristics
+			x = 0
+			for row in self.__Tiles:
+				y = 0
+				for tile in row:
+					tile.drawCharacteristics(self.__img, x, y, tile_width, tile_height)
+					y = y+tile_height
+				x = x+tile_width
+			
+			self.__modified = False
+		
 		# shifting the view and actually drawing
 		if shift == [0,0]:
 			surface.blit(self.__img, (0, 0))
