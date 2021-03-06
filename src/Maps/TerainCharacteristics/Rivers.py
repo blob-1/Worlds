@@ -1,7 +1,9 @@
 from pygame.draw import aaline
 from math import ceil
 
-class River():
+from .Characteristic import Characteristic
+
+class River(Characteristic):
 	def __init__(self, start, end):
 		self.__start = start
 		self.__end = end

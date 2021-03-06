@@ -7,7 +7,7 @@ from Win.Win import win, reset_win
 
 seed(1000)
 
-mapDisplay = MapDisplay([Map(None, Perlin = 20), Map(None, Perlin = 20), Map(None, Perlin = 20), Map(None, Perlin = 20)])
+mapDisplay = MapDisplay([Map(None, Perlin = 20)])#, Map(None, Perlin = 20), Map(None, Perlin = 20), Map(None, Perlin = 20)])
 
 py.init()
 

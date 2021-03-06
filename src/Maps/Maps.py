@@ -4,6 +4,9 @@ from math import cos, pi
 from Maps.Tiles import Tile 
 from Maps.Regions.Continents import Continent
 from Maps.Regions.Oceans import Ocean
+
+from Maps.TerainCharacteristics.OceanCurrents import OceanCurrent
+
 from pygame import Surface
 
 class Map():
@@ -15,23 +18,16 @@ class Map():
 			self.__height = len(tiles)
 			self.__width  = len(tiles[0])
 		else:
-			self.__Generate_tiles(x, y)
+			self.Generate_tiles(x, y)
 			for i in range(int((self.__height*self.__height)/116.64)):
 				self.__generateCircle(randint(10,20), randint(0,x), randint(0,y), randint(0,100))
 			self.__Perlin(Perlin)
 		
 		# generating the regions ! Ech conected tiles (Ocean or Continent) is assembled in one mass
-		self.__Regions = []
-		for i, row in enumerate(self.__Tiles):
-			for j, tile in enumerate(row):
-				newR = Ocean()
-				if not newR.addTile((tile,i,j)):
-					newR = Continent()
-					if not newR.addTile((tile,i,j)):
-						continue
-							
-				newR.generate(self, i, j, tile)	
-				self.__Regions.append(newR)
+		self.generateRegions()
+			
+		# generate the currents :	
+		self.generateCurrents(6)	
 			
 		self.__modified = True
 				
@@ -63,7 +59,7 @@ class Map():
 			for row in self.__Tiles:
 				y = 0
 				for tile in row:
-					tile.drawCharacteristics(self.__img, x, y, tile_width, tile_height)
+					tile.drawCharacteristics(self.__img, x, y, tile_width, tile_height, type)
 					y = y+tile_height
 				x = x+tile_width
 			
@@ -80,7 +76,7 @@ class Map():
 	
 	## RANDOM MAP GENERATION ! ##
 	
-	def __Generate_tiles(self, x, y):
+	def Generate_tiles(self, x, y):
 		self.__Tiles = []
 		for i in range(x):
 			self.__Tiles.append([])
@@ -163,3 +159,32 @@ class Map():
 				self.__getValidTile(-y+Xshift, x+Yshift).set_height(height)
 				self.__getValidTile(y+Xshift, -x+Yshift).set_height(height)
 				self.__getValidTile(y+Xshift, x+Yshift).set_height(height)
+	
+	def generateRegions(self):	
+		self.__Regions = []
+		for i, row in enumerate(self.__Tiles):
+			for j, tile in enumerate(row):
+				newR = Ocean()
+				if not newR.addTile((tile,i,j)):
+					newR = Continent()
+					if not newR.addTile((tile,i,j)):
+						continue
+							
+				newR.generate(self, i, j, tile)	
+				self.__Regions.append(newR)			
+				
+	def generateCurrents(self, nbcells = 6): # note : was overwhelmed by complexity of how to determine precise circulations cells soooo this is bad ! 
+		# get tiles that are on the different longitudes that determine a circulation cells. 
+		longitudinalTiles = []
+		positions = [int(self.__height*(i/nbcells))-1 for i in range(1, nbcells+1)]
+		
+		for i, listOFtile in enumerate(self.__Tiles):
+			for j in positions:
+				up = self.__getValidTile(i, j+1, False)
+				down = self.__getValidTile(i, j-1, False)
+				
+				if type(up.getRegion()) is Ocean:
+					up.addCharacteristic(OceanCurrent())
+				
+				if type(down.getRegion()) is Ocean:
+					down.addCharacteristic(OceanCurrent())

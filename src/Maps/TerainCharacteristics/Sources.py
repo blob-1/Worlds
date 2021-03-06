@@ -1,6 +1,8 @@
 from pygame.draw import ellipse
 
-class Source():
+from .Characteristic import Characteristic
+
+class Source(Characteristic):
 	def __init__(self):
 		pass
 		

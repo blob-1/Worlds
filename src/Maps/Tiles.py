@@ -49,9 +49,10 @@ class Tile():
 			
 		surface.fill(color, (x, y, w, h))	
 	
-	def drawCharacteristics(self, surface, x, y, w, h):
-		for chars in self.__caracteristics:
-			chars.draw(surface, x, y, w, h)
+	def drawCharacteristics(self, surface, x, y, w, h, type = "heightMap"):
+		if type != "heightMap":
+			for chars in self.__caracteristics:
+				chars.draw(surface, x, y, w, h)
 			
 	def regionalize(self, region):self.__region = region
 	def getRegion(self): return self.__region	
@@ -68,4 +69,6 @@ class Tile():
 		
 	def addCharacteristic(self, chars):
 		self.__caracteristics.append(chars)
+		
+	def getCharacteristics(self):return self.__caracteristics
 		

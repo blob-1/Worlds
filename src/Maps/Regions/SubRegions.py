@@ -2,7 +2,7 @@ from .Regions import Region
 
 class SubRegion(Region):
 	def __init__(self):
-		if type(self) is Region:
+		if type(self) is SubRegion:
 			raise Exception('SubRegion is an abstract class and cannot be instantiated directly')	
 	
 		Region.__init__(self)
