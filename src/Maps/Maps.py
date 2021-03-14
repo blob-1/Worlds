@@ -178,13 +178,19 @@ class Map():
 		longitudinalTiles = []
 		positions = [int(self.__height*(i/nbcells))-1 for i in range(1, nbcells+1)]
 		
-		for i, tile in enumerate(self.__Tiles):
-			for j in positions:
-				up = self.__getValidTile(i, j+1, False)
-				down = self.__getValidTile(i, j-1, False)
-				
-				if type(up.getRegion()) is Ocean:
-					up.addCharacteristic(OceanCurrent())
-				
-				if type(down.getRegion()) is Ocean:
-					down.addCharacteristic(OceanCurrent())
+	def generateCurrents(self, nbcells = 6): # note : was overwhelmed by complexity of how to determine precise circulations cells soooo this is bad ! 
+		# get tiles that are on the different longitudes that determine a circulation cells. 
+		longitudinalTiles = []
+		positions = [int(self.__height*(i/nbcells))-1 for i in range(1, nbcells+1)]
+		
+		direction = "hot"
+		
+		for i, listOFtile in enumerate(self.__Tiles):
+			for j, tile in enumerate(listOFtile):
+				if j in positions:
+					if direction == "hot":
+						direction = "cold"
+					else:
+						direction = "hot"
+				if type(tile.getRegion()) is Ocean:
+					tile.addCharacteristic(OceanCurrent(direction))

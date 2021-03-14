@@ -3,26 +3,26 @@ from .Characteristic import Characteristic
 from math import pi, cos, sin
 
 class OceanCurrent(Characteristic):
-	def __init__(self, type = "neutral"):
+	def __init__(self, type = "neutral", angle = 0):
+		self.__arrow = arrow(angle)
 		self.set_color(type)
-		self.__arrow = arrow(self.__color)
 		
 	def draw(self, surface, x, y, w, h): self.__arrow.draw(surface, x, y, w, h)
 		
 	def set_color(self, type):
 		if type == "cold":
 			self.__color = (36,10,220)
-		if type == "hot":
-			self.__color = (220,10,36)
 		else:
-			self.__color = (0,0,0)
+			self.__color = (220,10,36)
+
+		self.__arrow.set_color(self.__color)
 			
 class arrow(Characteristic):
-	def __init__(self, color, angle = 0):
+	def __init__(self, color = (0,0,0), angle = 0):
 		self.__color = color
 		self.__angle = angle
 		
-	def reOrient(self, orientation):self.__orientation = orientation
+	def set_angle(self, orientation):self.__orientation = orientation
 	def set_color(self, color): self.__color = color
 	
 	def draw(self, surface, x, y, w, h):
