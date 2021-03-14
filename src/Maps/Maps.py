@@ -192,5 +192,9 @@ class Map():
 						direction = "cold"
 					else:
 						direction = "hot"
+						
 				if type(tile.getRegion()) is Ocean:
-					tile.addCharacteristic(OceanCurrent(direction))
+					if direction == "hot":
+						tile.addCharacteristic(OceanCurrent(direction))
+					else:
+						tile.addCharacteristic(OceanCurrent(direction, 180))

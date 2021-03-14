@@ -4,7 +4,7 @@ from math import pi, cos, sin
 
 class OceanCurrent(Characteristic):
 	def __init__(self, type = "neutral", angle = 0):
-		self.__arrow = arrow(angle)
+		self.__arrow = arrow(angle = angle)
 		self.set_color(type)
 		
 	def draw(self, surface, x, y, w, h): self.__arrow.draw(surface, x, y, w, h)
