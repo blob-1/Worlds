@@ -178,7 +178,7 @@ class Map():
 		longitudinalTiles = []
 		positions = [int(self.__height*(i/nbcells))-1 for i in range(1, nbcells+1)]
 		
-		for i, listOFtile in enumerate(self.__Tiles):
+		for i, tile in enumerate(self.__Tiles):
 			for j in positions:
 				up = self.__getValidTile(i, j+1, False)
 				down = self.__getValidTile(i, j-1, False)
